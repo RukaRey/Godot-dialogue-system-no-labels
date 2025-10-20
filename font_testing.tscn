@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://ds2n1wi0o3n3f"]
+
+[ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://font_testing.gd" id="1_43tdi"]
+
+[node name="FontTesting" type="Node2D" node_paths=PackedStringArray("text_anchor")]
+script = ExtResource("1_43tdi")
+text_anchor = NodePath("CharBox/TextAnchor")
+
+[node name="CharBox" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 240.0
+offset_top = 104.0
+offset_right = 872.0
+offset_bottom = 256.0
+
+[node name="ColorRect" type="ColorRect" parent="CharBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
+
+[node name="TextAnchor" type="Marker2D" parent="CharBox"]
+
+[node name="ColorRect" type="ColorRect" parent="CharBox/TextAnchor"]
+visible = false
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+color = Color(0, 0.763032, 0.110204, 1)
