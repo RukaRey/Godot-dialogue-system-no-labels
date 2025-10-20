@@ -29,8 +29,8 @@ var everychar: String = "
 @onready var char_map := everychar.strip_escapes().split("") 
 
 func _ready() -> void:
-	var text_test := "\"O coelho [wave]pulou por cima[_wave] do rio\" - 
-Eh o [c.red]maximo do que voce consegue se lembrar[_c.red] do conto paralelepipedal."
+	var text_test := "\"O coelho [jump]pulou por cima[_jump] do rio\" - 
+Eh o [c.red]maximo do que voce consegue se lembrar[_c.red] do conto [w.weak]paralelepipedal.[_w.weak]"
 	
 	draw_sentence_by_word(text_test)
 	
@@ -171,13 +171,13 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 		#printt("Soma dos tamanhos: ", sum_sizes)
 		#printt("Tamanho.x da caixa: ", char_box.size.x - 32)
 		
-		printt("Current char:", char_count)
+		#printt("Current char:", char_count)
 		
 		for bbcode in bb_codes_coords.keys():
 			var bb_coords: Array = bb_codes_coords[bbcode]
 			for bb in bb_coords:
 				if char_count >= bb.x and char_count < bb.y :
-					printt("Inside bb section:", bbcode, bb)
+					#printt("Inside bb section:", bbcode, bb)
 					current_bbcode = bbcode
 					current_bb_cords = bb
 					var bb_found = bb_coords.find(bb)
