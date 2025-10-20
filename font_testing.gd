@@ -9,35 +9,36 @@ var font_image := preload("res://fonts/8bitOperator.png")
 var letter_object := preload("res://letter_object.tscn")
 
 @export var text_anchor: Marker2D
-@onready var char_box: Control = $CharBox
+@onready var char_box: Control = $TextBox/HBoxContainer/CharBox
 
 
 var char_size := Vector2i(16, 32)
-var typewriter_speed: float = 0.4
+var typewriter_speed: float = 0.025
 var char_horizontal_offset: int = int(char_size.x)
 var max_indices := font_image.get_size() / Vector2(char_size)
 
 var everychar: String = "
-	 ABCDEFGHIJKLMNOPQRSTUVWXYZ
-	abcdefghijklmnopqrstuvwxyz
-	0123456789
-	.,\"\"\'\'\"\'
-	?!@_*#$%&()+-/:;<=>[\\]^❤{|}~¡¢
+ ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+0123456789
+.,“”\'\'\"\'
+?!@_*#$%&()+-/:;<=>[\\]^❤{|}~¡¢
 "
 
 
 @onready var char_map := everychar.strip_escapes().split("") 
 
 func _ready() -> void:
-	var text_test := "\"O coelho [jump]pulou por cima[_jump] do rio\" - 
-Eh o [c.red]maximo do que voce consegue se lembrar[_c.red] do conto [w.weak]paralelepipedal.[_w.weak]"
+	var text_test := "“The rabbit [jump]jumped over[_jump] the river” - 
+That's the [c.red]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story."
 	
 	draw_sentence_by_word(text_test)
 	
 
-#func _process(delta: float) -> void:
-	#if Input.is_action_just_pressed( "ui_accept"):
-		#draw_sentence_by_word("[c.red]Bazinga.[_c.red]")
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed( "ui_accept"):
+		typewriter_speed = 0.0
+		draw_sentence_by_word("Although you can almost certantly remember it was [c.red]yellow.[_c.red]")
 
 func get_char_idx(char_str: String) -> Vector2i:
 	var char_idx := char_map.find(char_str)
@@ -94,7 +95,7 @@ func draw_sentence_by_char(
 	var char_count := 0
 	for character in text_split:
 		var char_idx := get_char_idx(character)
-		var char_pos: Vector2i = char_size * Vector2i(x_offset, y_offset)
+		var char_pos: Vector2i = Vector2i(text_anchor.position) + char_size * Vector2i(x_offset, y_offset)
 		
 		if(
 			split_paragraph(char_count, max_chars) != 0
@@ -104,7 +105,7 @@ func draw_sentence_by_char(
 		spawn_letter(char_idx, char_bbcode, char_pos)
 		x_offset += 1
 		
-		await get_tree().create_timer(0.01/typewriter_speed).timeout
+		await get_tree().create_timer(typewriter_speed).timeout
 		char_count += 1
 	
 	word_drawn.emit(char_count)
@@ -113,6 +114,8 @@ func draw_sentence_by_char(
 	
 
 func draw_sentence_by_word(sentence := "Hi this is sentence!"):
+	await get_tree().process_frame
+	
 	for ch in char_box.get_children():
 		if ch is LetterObject: ch.queue_free()
 	
@@ -126,7 +129,7 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 	
 	var max_chars: Vector2i =  Vector2i(char_box.size) / char_size
 	
-	print(bb_codes_coords)
+	#print(bb_codes_coords)
 	
 	var final_word: PackedStringArray
 	var final_world_location: int
@@ -187,7 +190,7 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 		if char_count > current_bb_cords.y:
 			current_bbcode = "[None]"
 		
-		if sum_sizes > char_box.size.x - 32:
+		if sum_sizes > char_box.size.x - 16:
 			#print("Passou do limite!\n")
 			sum_sizes = word_sizes[i]
 			word_char_idx.x = 0
@@ -195,6 +198,7 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 		
 		draw_sentence_by_char(current_bbcode, text_split[i], word_char_idx)
 		
+		printt("this signal happened")
 		var current_char = await word_drawn
 		
 		word_char_idx.x += current_char
