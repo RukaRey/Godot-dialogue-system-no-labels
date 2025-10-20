@@ -25,12 +25,10 @@ abcdefghijklmnopqrstuvwxyz
 ?!@_*#$%&()+-/:;<=>[\\]^❤{|}~¡¢
 "
 
-
 @onready var char_map := everychar.strip_escapes().split("") 
 
 func _ready() -> void:
-	var text_test := "“The rabbit [jump]jumped over[_jump] the river” - 
-That's the [c.red]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story."
+	var text_test := "“The rabbit [jump]jumped over[_jump] the river” - That's the [c.red]most you can remember[_c.red] of the [w.weak]paradoxically parallelepipedal[_w.weak] story."
 	
 	draw_sentence_by_word(text_test)
 	
@@ -134,7 +132,6 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 	var final_word: PackedStringArray
 	var final_world_location: int
 	for word in text_split:
-		## Palavras gigantes quebram o sistema, conserte depois
 		var split_word := word.split("")
 		
 		var new_word: Array
