@@ -3,8 +3,6 @@ class_name DialogueDisplay
 
 signal sentence_over(is_sentence_over: bool)
 
-signal word_drawn
-
 var font_image := preload("res://fonts/8bitOperator.png")
 var letter_object := preload("res://letter_object.tscn")
 
@@ -28,15 +26,19 @@ abcdefghijklmnopqrstuvwxyz
 @onready var char_map := everychar.strip_escapes().split("") 
 
 func _ready() -> void:
-	var text_test := "“The rabbit [jump]jumped over[_jump] the river” - That's the [c.red]most you can remember[_c.red] of the [w.weak]paradoxically parallelepipedal[_w.weak] story."
+	var text_test := "\"The rabbit [jump]jumped over[_jump] the river” - That's the [c.red]most you can remember[_c.red] of the [w.weak]paradoxically parallelepipedal[_w.weak] story."
 	
 	draw_sentence_by_word(text_test)
 	
+	await sentence_over
+	
+	print("sentence onver!")
+	
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed( "ui_accept"):
 		typewriter_speed = 0.0
-		draw_sentence_by_word("Although you can almost certantly remember it was [c.red]yellow.[_c.red]")
+		#draw_sentence_by_word("Although you can almost certantly remember it was [c.red]yellow.[_c.red]")
 
 func get_char_idx(char_str: String) -> Vector2i:
 	var char_idx := char_map.find(char_str)
@@ -58,10 +60,16 @@ func split_paragraph(char_num: int, max_chars: Vector2i) -> int:
 	return y_idx
 	
 
-func spawn_letter(char_idx: Vector2, char_bbcode: String, letter_pos := Vector2.ZERO):
+func spawn_letter(
+		char_idx: Vector2,
+		char_bbcode: String,
+		bb_delay : float,
+		letter_pos := Vector2.ZERO,
+		):
 	var spr_letter: LetterObject = letter_object.instantiate()
 	
 	spr_letter.bb_code = char_bbcode
+	spr_letter.bb_delay = bb_delay
 	
 	spr_letter.texture = font_image
 	spr_letter.hframes = int(max_indices.x)
@@ -91,6 +99,7 @@ func draw_sentence_by_char(
 	var max_chars: Vector2i =  Vector2i(char_box.size) / char_size
 	
 	var char_count := 0
+	var bb_delay_count := -1
 	for character in text_split:
 		var char_idx := get_char_idx(character)
 		var char_pos: Vector2i = Vector2i(text_anchor.position) + char_size * Vector2i(x_offset, y_offset)
@@ -100,16 +109,17 @@ func draw_sentence_by_char(
 		):
 			y_offset += 1
 		
-		spawn_letter(char_idx, char_bbcode, char_pos)
+		if typewriter_speed == 0:
+			bb_delay_count += 1
+		
+		spawn_letter(char_idx, char_bbcode, bb_delay_count, char_pos)
 		x_offset += 1
 		
-		await get_tree().create_timer(typewriter_speed).timeout
+		if typewriter_speed > 0:
+			await get_tree().create_timer(typewriter_speed).timeout
 		char_count += 1
 	
-	word_drawn.emit(char_count)
-	
-	#return Vector2i(x_offset, y_offset)
-	
+	return char_count
 
 func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 	await get_tree().process_frame
@@ -193,13 +203,12 @@ func draw_sentence_by_word(sentence := "Hi this is sentence!"):
 			word_char_idx.x = 0
 			word_char_idx.y += 1
 		
-		draw_sentence_by_char(current_bbcode, text_split[i], word_char_idx)
 		
-		printt("this signal happened")
-		var current_char = await word_drawn
+		var current_char_count = await draw_sentence_by_char(
+			current_bbcode, text_split[i], word_char_idx)
 		
-		word_char_idx.x += current_char
-		char_count += current_char
+		word_char_idx.x += current_char_count
+		char_count += current_char_count
 		
 	
 	sentence_over.emit(true)

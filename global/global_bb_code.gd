@@ -9,22 +9,25 @@ var functions: Dictionary = {
 	"[tremble]": none,
 }
 
-var none = func(_itself: Sprite2D): pass
+var none = func(_itself: Sprite2D, _delay: int): pass
 
-var color_red = func(itself: Sprite2D):
+var color_red = func(itself: Sprite2D, _delay: int):
 	itself.modulate = Color.RED
 
-var jump = func(itself: Sprite2D):
+var jump = func(itself: Sprite2D, delay: float):
 	var tween = itself.create_tween().set_loops()
 	
+	tween.tween_interval(delay * 0.01)
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
 	tween.tween_property(itself, "position:y", itself.position.y + 5, 0.3)
 	tween.tween_property(itself, "position:y", itself.position.y - 5, 0.3)
 	
 
 ## Ajustar depois
-var wave_weak = func(itself: Sprite2D):
+var wave_weak = func(itself: Sprite2D, delay: int):
 	var tween = itself.create_tween().set_loops()
+	
+	tween.tween_interval(delay * 0.01)
 	
 	tween.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(itself, "position:y", itself.position.y + 5, 0.3)
