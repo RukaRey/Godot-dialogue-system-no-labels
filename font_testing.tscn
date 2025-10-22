@@ -1,12 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://ds2n1wi0o3n3f"]
+[gd_scene load_steps=5 format=3 uid="uid://ds2n1wi0o3n3f"]
 
-[ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://font_testing.gd" id="1_43tdi"]
+[ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://dialogue_display.gd" id="1_43tdi"]
 [ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://misc_assets/text_box.png" id="2_rxapr"]
-[ext_resource type="Texture2D" uid="uid://dxuhwi5xmmtxn" path="res://misc_assets/face-merry14.png" id="3_o8lq2"]
+[ext_resource type="Texture2D" uid="uid://clw6n8uukvmvh" path="res://misc_assets/MerryPortraits.png" id="3_o8lq2"]
 
-[node name="FontTesting" type="Node2D" node_paths=PackedStringArray("text_anchor")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_5qop6"]
+atlas = ExtResource("3_o8lq2")
+
+[node name="FontTesting" type="Node2D" node_paths=PackedStringArray("text_anchor", "char_box")]
 script = ExtResource("1_43tdi")
 text_anchor = NodePath("TextBox/HBoxContainer/CharBox/TextAnchor")
+char_box = NodePath("TextBox/HBoxContainer/CharBox")
 
 [node name="TextBox" type="NinePatchRect" parent="."]
 offset_left = 240.0
@@ -29,9 +33,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CharPict" type="TextureRect" parent="TextBox/HBoxContainer"]
-visible = false
 layout_mode = 2
-texture = ExtResource("3_o8lq2")
+texture = SubResource("AtlasTexture_5qop6")
 expand_mode = 3
 
 [node name="CharBox" type="Control" parent="TextBox/HBoxContainer"]

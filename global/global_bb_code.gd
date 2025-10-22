@@ -1,5 +1,7 @@
 extends Node
 
+var rng := RandomNumberGenerator.new()
+
 @onready 
 var functions: Dictionary = {
 	"[None]": none,
@@ -23,7 +25,6 @@ var jump = func(itself: Sprite2D, delay: float):
 	tween.tween_property(itself, "position:y", itself.position.y - 5, 0.3)
 	
 
-## Ajustar depois
 var wave_weak = func(itself: Sprite2D, delay: int):
 	var tween = itself.create_tween().set_loops()
 	
