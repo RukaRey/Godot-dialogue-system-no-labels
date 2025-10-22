@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_rdrqo")
 dialogue_idx = "default"
-full_dialogue_sequence = Array[String](["[Portrait_Merry_0]\"The [aw_1.0]rabbit [jump][aw_1.0]jumped over[_jump] the river” - That's the [c.red][aw_1.0]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_14]Weirdly enough,[aw_0.5] the word [c.red][aw_5.5]\"yellow\"[_c.red] sounds familiar."])
+full_dialogue_sequence = Array[String](["[Portrait_Merry_0]\"The rabbit [jump]jumped over[_jump] the river” -That's the [c.red]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_3]\"The [aw_1.0]rabbit [jump][aw_1.0]jumped [aw_0.5]over[_jump] the [aw_1.0]river” -That's the [c.red][aw_0.5]most you can remember[_c.red] of [aw_0.5]the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_14]Weirdly enough,[aw_0.5] the word [c.red][aw_5.5]\"yellow\"[_c.red] sounds familiar."])
 metadata/_custom_type_script = "uid://dlw8lywavuled"

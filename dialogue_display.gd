@@ -113,6 +113,7 @@ func draw_sentence_by_char(
 		char_count += 1
 	
 	return char_count
+	
 
 func draw_string_sentence(
 	sentence := "Hi, [aw:0.5]this[_aw:0.5] is a test sentence! [aw:0.5][c.red]Try[_c.red][_aw:0.5] adding your own."
@@ -153,7 +154,6 @@ func draw_string_sentence(
 	
 	var max_chars: Vector2i =  Vector2i(char_box.size) / char_size
 	
-	#print(bb_codes_coords)
 	
 	var final_word: PackedStringArray
 	var final_word_location: int
@@ -206,22 +206,25 @@ func draw_string_sentence(
 			word_sizes[i],
 		)
 		
+		#printt("BB coords:", bb_codes_coords)
+		
 		if timer_adjustments:
 			text_split[i] = timer_adjustments[0]
 			word_sizes[i] = timer_adjustments[1]
 			
-			#printt("BB codes:", bb_codes_coords)
-			
 			for bb_idx in bb_codes_coords.keys():
 				for idz in range(bb_codes_coords[bb_idx].size()):
-					bb_codes_coords[bb_idx][idz] -= (timer_adjustments[1] / char_size.x + 1) * Vector2i.ONE
-		
+					bb_codes_coords[bb_idx][idz] -= timer_adjustments[2] * Vector2i.ONE
+				
 		sum_sizes += word_sizes[i]
+		
+		#printt("Char count:", char_count)
 		
 		for bbcode in bb_codes_coords.keys():
 			var bb_coords: Array = bb_codes_coords[bbcode]
 			for bb in bb_coords:
 				if char_count >= bb.x and char_count < bb.y :
+					printt("BB detail:", bb, char_count)
 					current_bbcode = bbcode
 					current_bb_cords = bb
 					var bb_found = bb_coords.find(bb)
@@ -351,7 +354,7 @@ func find_await_timers(word: String) -> Dictionary:
 			"string": results.get_string(),
 			"timer": results.get_string(1),
 		}
-			
+		
 	
 	return timer_info
 	
@@ -364,11 +367,16 @@ func apply_timers(word: String,
 	if not timer_info: return
 	
 	var t_timer := float(timer_info["timer"])
+	
 	word_size -= timer_info["string"].length() * char_size.x
 	
 	await get_tree().create_timer(t_timer).timeout
 	
-	return [word.replace(timer_info["string"], ""), word_size,]
+	return [
+		word.replace(timer_info["string"], ""), 
+		word_size,
+		timer_info["string"].length()
+		]
 
 
 func skip_text():
