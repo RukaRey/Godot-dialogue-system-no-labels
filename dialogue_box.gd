@@ -23,6 +23,7 @@ func _input(event: InputEvent) -> void:
 	
 
 func run_sequence():
+	if not is_instance_valid(dialogue_sequence): return
 	var full_dialogue := dialogue_sequence.full_dialogue_sequence
 	
 	for dialogue: String in full_dialogue:

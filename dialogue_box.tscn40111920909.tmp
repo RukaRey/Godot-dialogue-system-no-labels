@@ -17,6 +17,7 @@ dialogue_sequence = SubResource("Resource_351bv")
 
 [node name="DialogueDisplay" type="Node2D" parent="." node_paths=PackedStringArray("text_anchor", "char_box", "char_pict")]
 script = ExtResource("1_senjy")
+base_typewriter_speed = null
 text_anchor = NodePath("../TextBox/HBoxContainer/MarginCharBox/CharBox/TextAnchor")
 char_box = NodePath("../TextBox/HBoxContainer/MarginCharBox/CharBox")
 char_pict = NodePath("../TextBox/HBoxContainer/CharPicture/TextureRect")

@@ -145,6 +145,7 @@ func draw_string_sentence(
 				bb_codes_coords[bb][i] -= Vector2i.ONE * tag_size
 			
 		text_split[0] = text_split[0].replace(portrait["string"],"")
+		
 		call_portrait(portrait["name"], int(portrait["idx"]))
 	
 	
@@ -219,6 +220,7 @@ func draw_string_sentence(
 		sum_sizes += word_sizes[i]
 		
 		#printt("Char count:", char_count)
+		
 		
 		for bbcode in bb_codes_coords.keys():
 			var bb_coords: Array = bb_codes_coords[bbcode]
@@ -322,13 +324,13 @@ func filter_sentence_bbcodes(sentence: String) -> String:
 func call_portrait(character_name: String, portrait_idx: int):
 	if not is_instance_valid(char_pict): return
 	
-	var portrait: String = PortraitParse.get_portrait(character_name.to_lower())
+	var portrait: Array = PortraitParse.get_portrait(character_name.to_lower())
 	var atlas_texture := AtlasTexture.new()
 	
-	atlas_texture.atlas = load(portrait)
+	atlas_texture.atlas = load(portrait[0])
 	
 	var picture_size := Vector2(
-		atlas_texture.atlas.get_width() / 15,
+		atlas_texture.atlas.get_width() / portrait[1],
 		atlas_texture.atlas.get_height()
 	)
 	
