@@ -53,6 +53,7 @@ size_flags_horizontal = 3
 theme_override_constants/margin_right = 16
 
 [node name="CharBox" type="Control" parent="TextBox/HBoxContainer/MarginCharBox"]
+clip_contents = true
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
 size_flags_horizontal = 3

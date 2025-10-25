@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3 uid="uid://cw3ms1k377e4w"]
+
+[ext_resource type="Script" uid="uid://dlw8lywavuled" path="res://resources/dialogue_resource.gd" id="1_gr8t3"]
+
+[resource]
+script = ExtResource("1_gr8t3")
+dialogue_idx = "default"
+full_dialogue_sequence = Array[String](["[Portrait_John_1](I have spent [aw_1.5][c.red]three[_c.red] [aw_1.5][c.red]hours[_c.red] [aw_1.5]trying to correctly parse the timer tag).", "[Portrait_John_0]Hello! [aw_0.5]This is a dialogue testing sequence!", "[Portrait_Merry_14] It wasn't very [c.red]fun...[_c.red]"])
+metadata/_custom_type_script = "uid://dlw8lywavuled"

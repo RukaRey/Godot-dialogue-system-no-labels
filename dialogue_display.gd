@@ -7,6 +7,8 @@ var font_image := preload("res://fonts/8bitOperator.png")
 var letter_object := preload("res://letter_object.tscn")
 
 
+var universal_char_count: int = 0
+
 @export_range(0.0, 1.0, 0.025) 
 var base_typewriter_speed: float = 0.025
 @export 
@@ -15,6 +17,7 @@ var text_anchor: Marker2D
 var char_box: Control
 @export 
 var char_pict: TextureRect
+
 
 var char_size := Vector2i(16, 32)
 var typewriter_speed: float
@@ -75,6 +78,7 @@ func spawn_letter(
 
 func draw_sentence_by_char(
 		char_bbcode: String,
+		timer_queue: Array[Dictionary],
 		sentence := "Hi this is texx string!",
 		starting_offset := Vector2i.ZERO,
 	):
@@ -97,11 +101,6 @@ func draw_sentence_by_char(
 		var char_idx := get_char_idx(character)
 		var char_pos: Vector2i = Vector2i(text_anchor.position) + char_size * Vector2i(x_offset, y_offset)
 		
-		#if(
-			#split_paragraph(char_count, max_chars) != 0
-		#):
-			#y_offset += 1
-		
 		if typewriter_speed == 0:
 			bb_delay_count += 1
 		
@@ -111,6 +110,16 @@ func draw_sentence_by_char(
 		if typewriter_speed > 0:
 			await get_tree().create_timer(typewriter_speed).timeout
 		char_count += 1
+		
+		if timer_queue.size() > 0 and typewriter_speed > 0.0:
+			var timer_position: int = timer_queue[0]["position"]
+			var timer_interval: float = float(timer_queue[0]["timer"])
+			
+			if timer_position == universal_char_count:
+				await get_tree().create_timer(timer_interval).timeout
+				timer_queue.pop_front()
+		
+		universal_char_count += 1
 	
 	return char_count
 	
@@ -118,23 +127,47 @@ func draw_sentence_by_char(
 func draw_string_sentence(
 	sentence := "Hi, [aw:0.5]this[_aw:0.5] is a test sentence! [aw:0.5][c.red]Try[_c.red][_aw:0.5] adding your own."
 	):
-	typewriter_speed = base_typewriter_speed
-	text_anchor.position.x = 24
-	char_pict.texture = null
+	typewriter_speed = base_typewriter_speed # Resets typewriter speed = stops skipping
+	text_anchor.position.x = 24 # Resets text anchor pos to account for portrait offset
+	char_pict.texture = null # Removes portrait from box
+	universal_char_count = 0 # Resets universal char count
 	
 	await get_tree().process_frame
 	
+	# Max characters in font texture
 	max_indices = font_image.get_size() / Vector2(char_size)
 	
+	# Removes characters in box from previous dialogue
 	for ch in char_box.get_children():
 		if ch is LetterObject: ch.queue_free()
 	
+	# Finds initial timer position
+	var sentence_no_tags = filter_sentence_bbcodes(sentence)
+	
+	# Gets positions of timers in sentence without other tags
+	# Offsets timer positions to true positions
+	var timer_queue := find_await_timers(sentence_no_tags)
+	timer_queue = update_timer_queue(timer_queue)
+	
+	# Clears sentence from timers
+	var timer_erase_pos := find_await_timers(sentence)
+	timer_erase_pos = update_timer_queue(timer_erase_pos)
+	for timer in timer_erase_pos:
+		sentence = sentence.erase(timer["position"], timer["length"])
+		
+	
+	# Get the coordinates of the bbcodes in Vec2i format
 	var bb_codes_coords: Dictionary = get_bbcode_coords(sentence)
 	
+	# Removes the bbcodes from the string
 	var clear_sentence := filter_sentence_bbcodes(sentence)
-	var text_split := clear_sentence.split(" ")
-	var portrait := find_portrait_tag(text_split)
 	
+	# Splits the sentence by spaces
+	var text_split := clear_sentence.split(" ")
+	
+	# Checks if there's any portrait to spawn, removes the tag and subtracts tag size.
+	# This works because the portrait tag is only used at the beginning of any sentence.
+	var portrait := find_portrait_tag(text_split)
 	if portrait:
 		var tag_size: int = portrait["string"].length()
 		
@@ -146,87 +179,50 @@ func draw_string_sentence(
 			
 		text_split[0] = text_split[0].replace(portrait["string"],"")
 		
+		for i in range(timer_queue.size()):
+			timer_queue[i]["position"] -= tag_size
+		
 		call_portrait(portrait["name"], int(portrait["idx"]))
 	
-	
-	
+	# Sizes in px of the words
 	var word_sizes := []
+	# Tracks position of words, and informs to other functions
 	var word_char_idx := Vector2i.ZERO
-	
+	# Max characters allowed in box = size of box / size of character
 	var max_chars: Vector2i =  Vector2i(char_box.size) / char_size
 	
+	# Segment that splits words bigger than the textbox into smaller words
+	var big_word_split_info := split_words_bigger_than_box(text_split, max_chars)
+	if big_word_split_info: text_split = big_word_split_info
 	
-	var final_word: PackedStringArray
-	var final_word_location: int
-	for word in text_split:
-		var split_word := word.split("")
-		
-		var new_word: Array
-		while split_word.size() > max_chars.x:
-			for i in max_chars.x - 1:
-				new_word.append(split_word[i])
-			
-			new_word.append("-")
-			
-			var word_location := text_split.find(word)
-			
-			if word_location != -1:
-				text_split.remove_at(word_location)
-				text_split.insert(word_location, "".join(new_word))
-			else:
-				text_split.append("".join(new_word))
-			new_word.clear()
-			
-			for i in max_chars.x - 1:
-				split_word.remove_at(0)
-			
-			final_word = split_word
-			
-			if word_location != -1:
-				final_word_location = word_location + 1
-			else:
-				final_word_location = text_split.size()
-		
-	
-	if text_split[0] == "-": text_split.remove_at(0)
-	if final_word: text_split.insert(final_word_location, "".join(final_word))
-	
+	# Defines words sizes in px, accounting added space after spliting
 	for word in text_split:
 		word_sizes.append((word.split("").size() + 1) * char_size.x)
 	
-	var sum_sizes := 0
+	# Sum of words sizes, which dictates if the word can spawn inline or not
+	var sum_word_sizes := 0
+	# Tracks the char count, useful for the bbcodes. Updated after every spawned word
 	var char_count := 0
+	var prev_char_count := 0
 	
+	# Current BBCode being applied to one word or more
 	var current_bbcode: String = "[None]"
+	
+	# The active BBCode's coordinates, dictates if BBcode is active or not.
 	var current_bb_cords := Vector2(-1, 0)
+	
+	var timer_bbcode_check: String = current_bbcode
+	var timer_count: int = 1
 	
 	for i in text_split.size():
 		
-		var timer_adjustments = await apply_timers(
-			text_split[i], 
-			word_sizes[i],
-		)
-		
-		#printt("BB coords:", bb_codes_coords)
-		
-		if timer_adjustments:
-			text_split[i] = timer_adjustments[0]
-			word_sizes[i] = timer_adjustments[1]
-			
-			for bb_idx in bb_codes_coords.keys():
-				for idz in range(bb_codes_coords[bb_idx].size()):
-					bb_codes_coords[bb_idx][idz] -= timer_adjustments[2] * Vector2i.ONE
-				
-		sum_sizes += word_sizes[i]
-		
-		#printt("Char count:", char_count)
-		
+		sum_word_sizes += word_sizes[i]
 		
 		for bbcode in bb_codes_coords.keys():
 			var bb_coords: Array = bb_codes_coords[bbcode]
 			for bb in bb_coords:
 				if char_count >= bb.x and char_count < bb.y :
-					printt("BB detail:", bb, char_count)
+					#printt("BB detail:", bb, char_count)
 					current_bbcode = bbcode
 					current_bb_cords = bb
 					var bb_found = bb_coords.find(bb)
@@ -235,16 +231,15 @@ func draw_string_sentence(
 		if char_count > current_bb_cords.y:
 			current_bbcode = "[None]"
 		
-		if sum_sizes > char_box.size.x - 32:
-			#print("Passou do limite!\n")
-			sum_sizes = word_sizes[i]
+		if sum_word_sizes > char_box.size.x - 32:
+			sum_word_sizes = word_sizes[i]
 			word_char_idx.x = 0
 			word_char_idx.y += 1
 		
-		
 		var current_char_count = await draw_sentence_by_char(
-			current_bbcode, text_split[i], word_char_idx)
+			current_bbcode, timer_queue, text_split[i], word_char_idx)
 		
+		prev_char_count = word_char_idx.x
 		word_char_idx.x += current_char_count
 		char_count += current_char_count
 		
@@ -291,6 +286,8 @@ func search_for_bbcodes(bbcode: String, sentence: String) -> Array:
 	return bb_codes_pos
 	
 
+
+## 
 func get_bbcode_coords(
 		sentence: String = "[wave]Me text[_wave] [color]test[_color]aaa"
 	) -> Dictionary:
@@ -344,42 +341,92 @@ func call_portrait(character_name: String, portrait_idx: int):
 	char_box.size.x -= picture_size.x
 	
 
-func find_await_timers(word: String) -> Dictionary:
+func find_await_timers(word: String) -> Array[Dictionary]:
 	var regex := RegEx.new()
 	regex.compile("\\[aw_([0-9]*\\.[0-9]+)\\]")
 	
-	var timer_info: Dictionary
+	var timer_info: Array[Dictionary]
 	
 	for results in regex.search_all(word):
-		
-		timer_info = {
+		timer_info.append({
 			"string": results.get_string(),
 			"timer": results.get_string(1),
-		}
+			"position": results.get_start(),
+			"length": results.get_end() - results.get_start(),
+		}) 
 		
 	
 	return timer_info
 	
 
-func apply_timers(word: String, 
-	word_size: int, 
-	):
+# Broken
+#func apply_timers(word: String, 
+	#word_size: int, 
+	#char_count: int
+	#):
+	#
+	#var timer_info := find_await_timers(word)
+	#if not timer_info: return
+	#
+	#var t_timer := float(timer_info["timer"])
+	#var t_pos := char_count
+	#
+	#word_size -= timer_info["string"].length() * char_size.x
+	#
+	#await get_tree().create_timer(t_timer).timeout
+	#
+	#return [
+		#word.replace(timer_info["string"], ""), 
+		#word_size,
+		#timer_info["string"].length(),
+		#t_pos
+	#]
 	
-	var timer_info := find_await_timers(word)
-	if not timer_info: return
-	
-	var t_timer := float(timer_info["timer"])
-	
-	word_size -= timer_info["string"].length() * char_size.x
-	
-	await get_tree().create_timer(t_timer).timeout
-	
-	return [
-		word.replace(timer_info["string"], ""), 
-		word_size,
-		timer_info["string"].length()
-		]
 
+func update_timer_queue(timer_queue: Array[Dictionary]) -> Array[Dictionary]:
+	for i in range(1, timer_queue.size()):
+		timer_queue[i]["position"] -= i * timer_queue[i - 1]["length"]
+	return timer_queue
+
+func split_words_bigger_than_box(text_split: PackedStringArray, max_chars) -> PackedStringArray:
+	var final_word: PackedStringArray
+	var final_word_location: int
+	
+	for word in text_split:
+		var split_word := word.split("")
+		
+		var new_word: Array
+		while split_word.size() > max_chars.x:
+			for i in max_chars.x - 1:
+				new_word.append(split_word[i])
+			
+			new_word.append("-")
+			
+			var word_location := text_split.find(word)
+			
+			if word_location != -1:
+				text_split.remove_at(word_location)
+				text_split.insert(word_location, "".join(new_word))
+			else:
+				text_split.append("".join(new_word))
+			new_word.clear()
+			
+			for i in max_chars.x - 1:
+				split_word.remove_at(0)
+			
+			final_word = split_word
+			
+			if word_location != -1:
+				final_word_location = word_location + 1
+			else:
+				final_word_location = text_split.size()
+		
+	
+	if text_split[0] == "-": text_split.remove_at(0)
+	if final_word: text_split.insert(final_word_location, "".join(final_word))
+	
+	return text_split
+	
 
 func skip_text():
 	typewriter_speed = 0.0
