@@ -4,13 +4,20 @@ class_name DialogueBox
 signal interaction_input
 signal skip_dialogue
 
+@export
+var is_interactive: bool = true
 @export 
 var dialogue_sequence: DialogueResource
+
 @onready 
 var dialogue_display: DialogueDisplay = $DialogueDisplay
 
+
+
 func _ready() -> void:
 	skip_dialogue.connect(dialogue_display.skip_text)
+	
+	set_process_input(is_interactive)
 	
 	run_sequence()
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://db6pfhxftc5cr" path="res://dialogue_box.gd" id="1_n23yb"]
 [ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://dialogue_display.gd" id="1_senjy"]
-[ext_resource type="Resource" uid="uid://bes2ha86vhk75" path="res://resources/dialogue_one.tres" id="2_if77y"]
+[ext_resource type="Resource" uid="uid://beoxqcv3d4lb3" path="res://resources/kai_cenat.tres" id="2_if77y"]
 [ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://misc_assets/text_box.png" id="3_0nste"]
 
 [node name="DialogueBox" type="Node2D"]

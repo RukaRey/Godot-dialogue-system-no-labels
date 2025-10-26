@@ -14,6 +14,7 @@ config/name="Dialogue System 2"
 config/tags=PackedStringArray("system")
 run/main_scene="uid://b3jyym14yptlo"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+config/icon="uid://cp4g2jg7puom6"
 
 [autoload]
 

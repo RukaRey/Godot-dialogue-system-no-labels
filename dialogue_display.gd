@@ -1,11 +1,10 @@
-extends Node2D
+extends Node 
 class_name DialogueDisplay
 
 signal sentence_over(is_sentence_over: bool)
 
 var font_image := preload("res://fonts/8bitOperator.png")
 var letter_object := preload("res://letter_object.tscn")
-
 
 var universal_char_count: int = 0
 
@@ -34,6 +33,18 @@ var everychar: String = "
 
 @onready var char_map := everychar.strip_escapes().split("") 
 
+## Possibly deprecated function
+#func split_paragraph(char_num: int, max_chars: Vector2i) -> int:
+	#var y_idx := -1
+	#var max_c := max_chars.x  - 1
+	#
+	#while(char_num % max_c != 0):
+		#y_idx += 1
+		#char_num /= max_chars.x
+	#
+	#return y_idx
+	#
+	
 
 func get_char_idx(char_str: String) -> Vector2i:
 	var char_idx := char_map.find(char_str)
@@ -42,18 +53,6 @@ func get_char_idx(char_str: String) -> Vector2i:
 	var x_idx = char_idx % 100
 	
 	return Vector2i(x_idx, y_idx)
-	
-
-## Possibly deprecated
-func split_paragraph(char_num: int, max_chars: Vector2i) -> int:
-	var y_idx := -1
-	var max_c := max_chars.x  - 1
-	
-	while(char_num % max_c != 0):
-		y_idx += 1
-		char_num /= max_chars.x
-	
-	return y_idx
 	
 
 func spawn_letter(
@@ -263,6 +262,28 @@ func find_portrait_tag(text_split: PackedStringArray) -> Dictionary:
 	return portrait_info
 	
 
+func call_portrait(character_name: String, portrait_idx: int):
+	if not is_instance_valid(char_pict): return
+	
+	var portrait: Array = PortraitParse.get_portrait(character_name.to_lower())
+	var atlas_texture := AtlasTexture.new()
+	
+	atlas_texture.atlas = load(portrait[0])
+	
+	var picture_size := Vector2(
+		atlas_texture.atlas.get_width() / portrait[1],
+		atlas_texture.atlas.get_height()
+	)
+	
+	var char_pic_idx := portrait_idx * picture_size.x
+	
+	atlas_texture.region = Rect2(char_pic_idx, 0, picture_size.x, picture_size.y)
+	
+	char_pict.texture = atlas_texture
+	if text_anchor: text_anchor.position.x -= 32
+	if char_box: char_box.size.x -= picture_size.x
+	
+
 func search_for_bbcodes(bbcode: String, sentence: String) -> Array:
 	var bb_code_at := 0
 	var bb_codes_pos: Array
@@ -286,8 +307,6 @@ func search_for_bbcodes(bbcode: String, sentence: String) -> Array:
 	return bb_codes_pos
 	
 
-
-## 
 func get_bbcode_coords(
 		sentence: String = "[wave]Me text[_wave] [color]test[_color]aaa"
 	) -> Dictionary:
@@ -316,29 +335,6 @@ func filter_sentence_bbcodes(sentence: String) -> String:
 		clear_sentence = clear_sentence.replace("[_" + bb.erase(0), "")
 	
 	return clear_sentence
-	
-
-func call_portrait(character_name: String, portrait_idx: int):
-	if not is_instance_valid(char_pict): return
-	
-	var portrait: Array = PortraitParse.get_portrait(character_name.to_lower())
-	var atlas_texture := AtlasTexture.new()
-	
-	atlas_texture.atlas = load(portrait[0])
-	
-	var picture_size := Vector2(
-		atlas_texture.atlas.get_width() / portrait[1],
-		atlas_texture.atlas.get_height()
-	)
-	
-	var char_pic_idx := portrait_idx * picture_size.x
-	
-	atlas_texture.region = Rect2(char_pic_idx, 0, picture_size.x, picture_size.y)
-	
-	char_pict.texture = atlas_texture
-	
-	text_anchor.position.x -= 32
-	char_box.size.x -= picture_size.x
 	
 
 func find_await_timers(word: String) -> Array[Dictionary]:
@@ -387,6 +383,7 @@ func update_timer_queue(timer_queue: Array[Dictionary]) -> Array[Dictionary]:
 	for i in range(1, timer_queue.size()):
 		timer_queue[i]["position"] -= i * timer_queue[i - 1]["length"]
 	return timer_queue
+	
 
 func split_words_bigger_than_box(text_split: PackedStringArray, max_chars) -> PackedStringArray:
 	var final_word: PackedStringArray

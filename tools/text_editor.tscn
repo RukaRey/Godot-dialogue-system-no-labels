@@ -1,0 +1,182 @@
+[gd_scene load_steps=2 format=3 uid="uid://brb682k6ruw5n"]
+
+[ext_resource type="Script" uid="uid://clhuuu44q73bs" path="res://tools/text_editor.gd" id="1_amexy"]
+
+[node name="TextEditor" type="Control" node_paths=PackedStringArray("char_pict")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_amexy")
+char_pict = NodePath("WholeInterface/PortraitBtn/VBoxContainer/MarginContainer/CharPicture")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 73.0
+grow_horizontal = 2
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 18
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Open" type="Button" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+text = "Open file"
+
+[node name="NewDialogue" type="Button" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+text = "New dialogue"
+
+[node name="OpenFile" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 1
+ok_button_text = "Open"
+file_mode = 0
+root_subfolder = "res://resources"
+filters = PackedStringArray("*.tres")
+
+[node name="SaveWdn" type="FileDialog" parent="."]
+root_subfolder = "res://resources/"
+filters = PackedStringArray("*.tres")
+
+[node name="WholeInterface" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 232.0
+offset_top = 192.0
+offset_right = 882.0
+offset_bottom = 416.0
+
+[node name="PortraitBtn" type="Button" parent="WholeInterface"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WholeInterface/PortraitBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+layout_mode = 2
+
+[node name="CharName" type="TextEdit" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 37)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.55
+placeholder_text = "Input valid char"
+editable = false
+wrap_mode = 1
+
+[node name="Change" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "<->"
+
+[node name="MarginContainer" type="MarginContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="CharPicture" type="TextureRect" parent="WholeInterface/PortraitBtn/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 2
+stretch_mode = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PrevPrtButton" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "<<"
+
+[node name="PprtIdx" type="Label" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 1
+
+[node name="NextPrtButton" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = ">>"
+
+[node name="Save" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save portrait"
+
+[node name="TextInterface" type="VBoxContainer" parent="WholeInterface"]
+custom_minimum_size = Vector2(440, 224)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WholeInterface/TextInterface"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PrevButton" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "<<"
+
+[node name="NewButton" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "  +  "
+
+[node name="NextButton" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = ">>"
+
+[node name="Dial Idx Label" type="Label" parent="WholeInterface/TextInterface/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "#0"
+horizontal_alignment = 2
+
+[node name="SaveToFile" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+disabled = true
+text = "Save to file"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="WholeInterface/TextInterface"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 6.0
+
+[node name="TextEdit" type="TextEdit" parent="WholeInterface/TextInterface/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+wrap_mode = 1
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/NewDialogue" to="." method="_new_dialogue_file"]
+[connection signal="file_selected" from="SaveWdn" to="." method="_on_save_wdn_file_selected"]
+[connection signal="text_changed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2/CharName" to="." method="_on_character_name_analysis"]
+[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2/Change" to="." method="_on_portrait_changes_save"]
+[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer/PrevPrtButton" to="." method="_on_decrease_pprt_idx"]
+[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer/NextPrtButton" to="." method="_on_increase_pprt_idx"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/PrevButton" to="." method="_on_decrease_dial_idx"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/NewButton" to="." method="_on_new_dialogue_string"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/NextButton" to="." method="_on_increase_dial_idx"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/SaveToFile" to="." method="_on_dialogue_file_saved"]
+[connection signal="text_changed" from="WholeInterface/TextInterface/HBoxContainer2/TextEdit" to="." method="_on_current_text_was_edited"]
