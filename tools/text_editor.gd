@@ -3,15 +3,17 @@ class_name DialogueEditor
 
 @export var save_path: String = "res://resources/"
 @onready var save_wdn: FileDialog = $SaveWdn
+@onready var open_file: FileDialog = $OpenFile
 
-@onready var dial_idx_label: Label = $"WholeInterface/TextInterface/UpperLine/Dial Idx Label"
+@onready var dial_idx_label: Label = $"WholeInterface/PortraitBtn/Spacer/FileOptions/Dial Idx Label"
 @onready var pprt_idx_label: Label = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/PprtIdx
 @onready var tags_options: OptionButton = $WholeInterface/TextInterface/HBoxContainer/TagsOptions
+@onready var text_for_filename: Label = $PanelContainer/HBoxContainer/TextForFilename
 
 @onready var char_name: TextEdit = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer2/CharName
 @onready var text_edit: TextEdit = $WholeInterface/TextInterface/HBoxContainer2/TextEdit
 @onready var new_button: Button = $WholeInterface/TextInterface/HBoxContainer/NewButton
-@onready var save_to_file: Button = $WholeInterface/TextInterface/UpperLine/SaveToFile
+@onready var save_to_file: Button = $PanelContainer/HBoxContainer/SaveToFile
 @onready var apply_tag: Button = $WholeInterface/TextInterface/HBoxContainer/ApplyTag
 @onready var timer_interval: LineEdit = $WholeInterface/TextInterface/HBoxContainer/TimerInterval
 @onready var add_timer: Button = $WholeInterface/TextInterface/HBoxContainer/AddTimer
@@ -19,13 +21,15 @@ class_name DialogueEditor
 ## Progress buttons for dialogue text
 @onready var prev_button: Button = $WholeInterface/TextInterface/HBoxContainer/PrevButton
 @onready var next_button: Button = $WholeInterface/TextInterface/HBoxContainer/NextButton
+@onready var prev_prt_button: Button = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/PrevPrtButton
+@onready var next_prt_button: Button = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/NextPrtButton
 
 var max_dial_idx := 0
 var dial_idx := 0:
 	set(idx):
 		dial_idx = clamp(idx, 0, max_dial_idx)
 		
-		dial_idx_label.text = "#" + str(dial_idx)
+		dial_idx_label.text = "Dialogue #" + str(dial_idx)
 		prev_button.disabled = dial_idx == 0
 		next_button.disabled = dial_idx == max_dial_idx
 		
@@ -72,6 +76,60 @@ func activate_editor(active: bool):
 func _new_dialogue_file() -> void:
 	dialogue_file = DialogueResource.new()
 	
+	text_for_filename.text = "Creating new dialogue...."
+	
+	char_name.clear()
+	char_pict.texture = null
+	dial_idx_label.text = "Dialogue #0"
+	timer_interval.text = "1.0"
+	pprt_idx_label.text = "0"
+	
+	dialogue_clone.clear()
+	portraits_array.clear()
+	
+	dialogue_clone.append("")
+	portraits_array.append("")
+	
+	apply_tag.disabled = true
+	next_button.disabled = true
+	prev_button.disabled = true
+	
+	text_edit.clear()
+	max_dial_idx = 0
+	tags_options.select(0)
+	
+	
+	
+	activate_editor(true)
+	
+
+func _on_open_file_pressed() -> void:
+	open_file.popup()
+	
+
+func _on_file_selected(path: String) -> void:
+	dialogue_file = load(path)
+	var filename: PackedStringArray = path.split("/")
+	
+	text_for_filename.text = "Editing " + filename[-1] + "'s dialogue...."
+	
+	dialogue_clone.clear()
+	portraits_array.clear()
+	
+	var sentence_no_pprt: String
+	for sentence in dialogue_file.full_dialogue_sequence:
+		var pprt_tag := find_portrait_tag(sentence.split(" "))
+		if pprt_tag:
+			dialogue_clone.append(sentence.replace(pprt_tag["string"], ""))
+			portraits_array.append(pprt_tag["string"])
+		else:
+			dialogue_clone.append(sentence)
+			portraits_array.append("")
+	
+	max_dial_idx = dialogue_file.full_dialogue_sequence.size() - 1
+	dial_idx = 0
+	
+	show_text(dial_idx)
 	activate_editor(true)
 	
 
@@ -123,18 +181,24 @@ func display_portrait(idx: int):
 		var portrait: Array = portraits_array[idx].split("_")
 		
 		if portrait.size() - 1 > 0:
-			var c_name: String = portrait[1]
+			var c_name: String = portrait[1].to_lower()
 			var c_idx: String = portrait[2].replace("]", "")
 			
 			max_pprt_idx = PortraitParse.character_portraits[c_name][-1]
 			char_name.text = c_name
 			pprt_idx = int(c_idx)
 			call_portrait(c_name, int(c_idx))
+			
+			prev_prt_button.disabled = false
+			next_prt_button.disabled = false
 		else:
 			max_pprt_idx = 0
 			pprt_idx = pprt_idx
 			char_pict.texture = null
 			char_name.text = ""
+			
+			prev_prt_button.disabled = true
+			next_prt_button.disabled = true
 		
 		#print(portraits_array)
 	
@@ -148,6 +212,9 @@ func _on_character_name_analysis() -> void:
 		if dial_idx <= portraits_array.size()-1: 
 			portraits_array.remove_at(dial_idx)
 		portraits_array.insert(dial_idx, new_pprt_tag)
+		
+		prev_prt_button.disabled = false
+		next_prt_button.disabled = false
 		
 		max_pprt_idx = PortraitParse.character_portraits[char_possible][-1]
 		
@@ -230,5 +297,4 @@ func _on_add_timer_pressed() -> void:
 	var timer_text: String = add_timer_tags_to_sentence(float(timer_interval.text))
 	
 	text_edit.insert_text_at_caret(timer_text)
-	
 	

@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://resources/dialogue_resource.gd" id="1_ihhrd"]
-
-[resource]
-script = ExtResource("1_ihhrd")
-dialogue_idx = "a"
-full_dialogue_sequence = Array[String](["FFFSADSA"])
