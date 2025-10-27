@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3 uid="uid://b5vdxqt7imvgt"]
+
+[ext_resource type="Script" uid="uid://dlw8lywavuled" path="res://resources/dialogue_resource.gd" id="1_3vucf"]
+
+[resource]
+script = ExtResource("1_3vucf")
+dialogue_idx = "stupid_text"
+full_dialogue_sequence = Array[String](["[Portrait_john_0][w.weak]Hello![_w.weak] {aw_1.0}[c.red]This is a[_c.red] [jump]{aw_0.5}test paragraph[_jump]!", "[Portrait_merry_11]Other [jump]character[_jump] {aw_0.5}[c.red]portrait[_c.red]"])

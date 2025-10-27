@@ -1,4 +1,4 @@
-extends Node 
+extends Control 
 class_name DialogueDisplay
 
 signal sentence_over(is_sentence_over: bool)
@@ -202,16 +202,12 @@ func draw_string_sentence(
 	var sum_word_sizes := 0
 	# Tracks the char count, useful for the bbcodes. Updated after every spawned word
 	var char_count := 0
-	var prev_char_count := 0
 	
 	# Current BBCode being applied to one word or more
 	var current_bbcode: String = "[None]"
 	
 	# The active BBCode's coordinates, dictates if BBcode is active or not.
 	var current_bb_cords := Vector2(-1, 0)
-	
-	var timer_bbcode_check: String = current_bbcode
-	var timer_count: int = 1
 	
 	for i in text_split.size():
 		
@@ -238,7 +234,6 @@ func draw_string_sentence(
 		var current_char_count = await draw_sentence_by_char(
 			current_bbcode, timer_queue, text_split[i], word_char_idx)
 		
-		prev_char_count = word_char_idx.x
 		word_char_idx.x += current_char_count
 		char_count += current_char_count
 		
@@ -339,7 +334,8 @@ func filter_sentence_bbcodes(sentence: String) -> String:
 
 func find_await_timers(word: String) -> Array[Dictionary]:
 	var regex := RegEx.new()
-	regex.compile("\\[aw_([0-9]*\\.[0-9]+)\\]")
+	#regex.compile("\\{aw_([0-9]*\\.[0-9]+)\\}")
+	regex.compile("\\{aw_([0-9]+(?:\\.[0-9]+)?)\\}")
 	
 	var timer_info: Array[Dictionary]
 	

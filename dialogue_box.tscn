@@ -2,19 +2,20 @@
 
 [ext_resource type="Script" uid="uid://db6pfhxftc5cr" path="res://dialogue_box.gd" id="1_n23yb"]
 [ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://dialogue_display.gd" id="1_senjy"]
-[ext_resource type="Resource" uid="uid://beoxqcv3d4lb3" path="res://resources/kai_cenat.tres" id="2_if77y"]
+[ext_resource type="Resource" uid="uid://b5vdxqt7imvgt" path="res://resources/stupid_text.tres" id="2_if77y"]
 [ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://misc_assets/text_box.png" id="3_0nste"]
 
 [node name="DialogueBox" type="Node2D"]
 script = ExtResource("1_n23yb")
 dialogue_sequence = ExtResource("2_if77y")
 
-[node name="DialogueDisplay" type="Node2D" parent="." node_paths=PackedStringArray("text_anchor", "char_box", "char_pict")]
+[node name="DialogueDisplay" type="Control" parent="." node_paths=PackedStringArray("text_anchor", "char_box", "char_pict")]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_senjy")
 text_anchor = NodePath("../TextBox/HBoxContainer/MarginCharBox/CharBox/TextAnchor")
 char_box = NodePath("../TextBox/HBoxContainer/MarginCharBox/CharBox")
 char_pict = NodePath("../TextBox/HBoxContainer/CharPicture/TextureRect")
-metadata/_custom_type_script = "uid://c0k43y3adjfuf"
 
 [node name="TextBox" type="NinePatchRect" parent="."]
 offset_right = 696.0

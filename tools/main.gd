@@ -1,5 +1,5 @@
 extends DialogueDisplay
-class_name DialogueEditor
+
 
 @onready var open_file: FileDialog = $OpenFile
 @onready var char_name: TextEdit = $WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2/CharName

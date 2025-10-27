@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3 uid="uid://bes2ha86vhk75"]
-
-[ext_resource type="Script" uid="uid://dcbo257pxlfuw" path="res://dialogue_resource.gd" id="1_rdrqo"]
-
-[resource]
-script = ExtResource("1_rdrqo")
-dialogue_idx = "default"
-full_dialogue_sequence = Array[String](["[Portrait_Merry_3]\"The [aw_1.0]rabbit [jump][aw_1.0]jued o[aw_1.0]ver[_jump] the [aw_1.0]river” -That's the [c.red][aw_0.5]most you can remember[_c.red] of [aw_0.5]the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_3]\"The rabbit [jump]jued[_jump] [jump]over[_jump] the [aw_9.0]river” -That's the [c.red]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_0]\"The rabbit [jump]jumped over[_jump] the river” -That's the [c.red]most you can remember[_c.red] of the [w.weak]parallelepipedal[_w.weak] story. ", "[Portrait_Merry_14]Weirdly enough,[aw_0.5] the word [c.red][aw_5.5]\"yellow\"[_c.red] sounds familiar."])

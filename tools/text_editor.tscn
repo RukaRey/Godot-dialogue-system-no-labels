@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://brb682k6ruw5n"]
+[gd_scene load_steps=3 format=3 uid="uid://brb682k6ruw5n"]
 
 [ext_resource type="Script" uid="uid://clhuuu44q73bs" path="res://tools/text_editor.gd" id="1_amexy"]
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_amexy"]
+number_color = Color(1, 1, 1, 1)
+symbol_color = Color(1, 1, 1, 1)
 
 [node name="TextEditor" type="Control" node_paths=PackedStringArray("char_pict")]
 layout_mode = 3
@@ -10,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_amexy")
-char_pict = NodePath("WholeInterface/PortraitBtn/VBoxContainer/MarginContainer/CharPicture")
+char_pict = NodePath("WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/MarginContainer/CharPicture")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -50,73 +54,70 @@ filters = PackedStringArray("*.tres")
 
 [node name="WholeInterface" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 232.0
-offset_top = 192.0
+offset_left = 72.0
+offset_top = 128.0
 offset_right = 882.0
 offset_bottom = 416.0
 
-[node name="PortraitBtn" type="Button" parent="WholeInterface"]
+[node name="PortraitBtn" type="VBoxContainer" parent="WholeInterface"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="WholeInterface/PortraitBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Spacer" type="Control" parent="WholeInterface/PortraitBtn"]
+layout_mode = 2
+size_flags_vertical = 3
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="WholeInterface/PortraitBtn"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WholeInterface/PortraitBtn/PanelContainer"]
 layout_mode = 2
 
-[node name="CharName" type="TextEdit" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CharName" type="TextEdit" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(0, 37)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.55
-placeholder_text = "Input valid char"
+placeholder_text = "Character name"
 editable = false
 wrap_mode = 1
 
-[node name="Change" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-disabled = true
-text = "<->"
-
-[node name="MarginContainer" type="MarginContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="CharPicture" type="TextureRect" parent="WholeInterface/PortraitBtn/VBoxContainer/MarginContainer"]
+[node name="CharPicture" type="TextureRect" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 2
 stretch_mode = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PrevPrtButton" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+[node name="PrevPrtButton" type="Button" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "<<"
 
-[node name="PprtIdx" type="Label" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+[node name="PprtIdx" type="Label" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 horizontal_alignment = 1
 
-[node name="NextPrtButton" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer"]
+[node name="NextPrtButton" type="Button" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = ">>"
 
-[node name="Save" type="Button" parent="WholeInterface/PortraitBtn/VBoxContainer"]
+[node name="Save" type="Button" parent="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -125,6 +126,25 @@ text = "Save portrait"
 [node name="TextInterface" type="VBoxContainer" parent="WholeInterface"]
 custom_minimum_size = Vector2(440, 224)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="UpperLine" type="HBoxContainer" parent="WholeInterface/TextInterface"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Dial Idx Label" type="Label" parent="WholeInterface/TextInterface/UpperLine"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "#0"
+horizontal_alignment = 2
+
+[node name="SaveToFile" type="Button" parent="WholeInterface/TextInterface/UpperLine"]
+layout_mode = 2
+size_flags_horizontal = 8
+disabled = true
+text = "Save to file"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WholeInterface/TextInterface"]
 layout_mode = 2
@@ -145,18 +165,33 @@ layout_mode = 2
 disabled = true
 text = ">>"
 
-[node name="Dial Idx Label" type="Label" parent="WholeInterface/TextInterface/HBoxContainer"]
-custom_minimum_size = Vector2(64, 0)
+[node name="TagsOptions" type="OptionButton" parent="WholeInterface/TextInterface/HBoxContainer"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+disabled = true
+
+[node name="ApplyTag" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+disabled = true
+text = "Add Tag"
+
+[node name="TimerInterval" type="LineEdit" parent="WholeInterface/TextInterface/HBoxContainer"]
+custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-text = "#0"
-horizontal_alignment = 2
+text = "1.0"
+placeholder_text = "1.0"
+max_length = 6
+editable = false
+context_menu_enabled = false
+virtual_keyboard_type = 3
 
-[node name="SaveToFile" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
+[node name="AddTimer" type="Button" parent="WholeInterface/TextInterface/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
 disabled = true
-text = "Save to file"
+text = "Place Timer"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="WholeInterface/TextInterface"]
 layout_mode = 2
@@ -166,17 +201,25 @@ size_flags_stretch_ratio = 6.0
 [node name="TextEdit" type="TextEdit" parent="WholeInterface/TextInterface/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "Write dialogue here...."
 editable = false
+context_menu_enabled = false
+deselect_on_focus_loss_enabled = false
 wrap_mode = 1
+caret_blink = true
+syntax_highlighter = SubResource("CodeHighlighter_amexy")
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/NewDialogue" to="." method="_new_dialogue_file"]
 [connection signal="file_selected" from="SaveWdn" to="." method="_on_save_wdn_file_selected"]
-[connection signal="text_changed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2/CharName" to="." method="_on_character_name_analysis"]
-[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer2/Change" to="." method="_on_portrait_changes_save"]
-[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer/PrevPrtButton" to="." method="_on_decrease_pprt_idx"]
-[connection signal="pressed" from="WholeInterface/PortraitBtn/VBoxContainer/HBoxContainer/NextPrtButton" to="." method="_on_increase_pprt_idx"]
+[connection signal="text_changed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer2/CharName" to="." method="_on_character_name_analysis"]
+[connection signal="pressed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/PrevPrtButton" to="." method="_on_decrease_pprt_idx"]
+[connection signal="pressed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/NextPrtButton" to="." method="_on_increase_pprt_idx"]
+[connection signal="pressed" from="WholeInterface/TextInterface/UpperLine/SaveToFile" to="." method="_on_dialogue_file_saved"]
 [connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/PrevButton" to="." method="_on_decrease_dial_idx"]
 [connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/NewButton" to="." method="_on_new_dialogue_string"]
 [connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/NextButton" to="." method="_on_increase_dial_idx"]
-[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/SaveToFile" to="." method="_on_dialogue_file_saved"]
+[connection signal="item_selected" from="WholeInterface/TextInterface/HBoxContainer/TagsOptions" to="." method="_on_tags_options_item_selected"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/ApplyTag" to="." method="_on_apply_tag_pressed"]
+[connection signal="text_changed" from="WholeInterface/TextInterface/HBoxContainer/TimerInterval" to="." method="_on_timer_interval_entered"]
+[connection signal="pressed" from="WholeInterface/TextInterface/HBoxContainer/AddTimer" to="." method="_on_add_timer_pressed"]
 [connection signal="text_changed" from="WholeInterface/TextInterface/HBoxContainer2/TextEdit" to="." method="_on_current_text_was_edited"]

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3 uid="uid://d05og26ugoqnl"]
+
+[ext_resource type="Script" uid="uid://dlw8lywavuled" path="res://resources/dialogue_resource.gd" id="1_7i4kc"]
+
+[resource]
+script = ExtResource("1_7i4kc")
+dialogue_idx = "dialogue_exibition"
+full_dialogue_sequence = Array[String](["[Portrait_merry_1]Hello!", "[Portrait_merry_0]This is a [w.weak]{aw_0.5}test segment[_w.weak] for the [w.weak]{aw_0.5}text dialogue[_w.weak]!", "[Portrait_merry_8]So feel free to{aw_1.0}, uhh{aw_0.2}.{aw_0.2}.{aw_0.2}.", "[Portrait_merry_9][w.weak]Read?[_w.weak]", "(You read the text)."])
