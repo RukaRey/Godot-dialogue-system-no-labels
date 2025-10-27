@@ -17,6 +17,7 @@ class_name DialogueEditor
 @onready var apply_tag: Button = $WholeInterface/TextInterface/HBoxContainer/ApplyTag
 @onready var timer_interval: LineEdit = $WholeInterface/TextInterface/HBoxContainer/TimerInterval
 @onready var add_timer: Button = $WholeInterface/TextInterface/HBoxContainer/AddTimer
+@onready var view_dialogue: Button = $PanelContainer/HBoxContainer/ViewDialogue
 
 ## Progress buttons for dialogue text
 @onready var prev_button: Button = $WholeInterface/TextInterface/HBoxContainer/PrevButton
@@ -68,6 +69,7 @@ func activate_editor(active: bool):
 	timer_interval.editable = active
 	
 	#apply_tag.disabled = not active
+	view_dialogue.disabled = not active
 	add_timer.disabled = not active
 	tags_options.disabled = not active
 	new_button.disabled = not active
@@ -77,6 +79,7 @@ func _new_dialogue_file() -> void:
 	dialogue_file = DialogueResource.new()
 	
 	text_for_filename.text = "Creating new dialogue...."
+	dialogue_file.dialogue_idx = "current_dialogue"
 	
 	char_name.clear()
 	char_pict.texture = null
@@ -98,8 +101,6 @@ func _new_dialogue_file() -> void:
 	max_dial_idx = 0
 	tags_options.select(0)
 	
-	
-	
 	activate_editor(true)
 	
 
@@ -116,7 +117,6 @@ func _on_file_selected(path: String) -> void:
 	dialogue_clone.clear()
 	portraits_array.clear()
 	
-	var sentence_no_pprt: String
 	for sentence in dialogue_file.full_dialogue_sequence:
 		var pprt_tag := find_portrait_tag(sentence.split(" "))
 		if pprt_tag:
@@ -213,6 +213,8 @@ func _on_character_name_analysis() -> void:
 			portraits_array.remove_at(dial_idx)
 		portraits_array.insert(dial_idx, new_pprt_tag)
 		
+		#printt("Portrait updated:", portraits_array)
+		
 		prev_prt_button.disabled = false
 		next_prt_button.disabled = false
 		
@@ -282,11 +284,9 @@ func _on_apply_tag_pressed() -> void:
 	text_edit.insert_text_at_caret(tagged_text)
 	
 
-
 func _on_tags_options_item_selected(index: int) -> void:
 	apply_tag.disabled = index == 0 or not text_edit.has_selection()
 	
-
 
 func _on_timer_interval_entered(new_text: String) -> void:
 	if not new_text.is_valid_float() and not new_text == "": #previnir negativo depois
@@ -297,4 +297,34 @@ func _on_add_timer_pressed() -> void:
 	var timer_text: String = add_timer_tags_to_sentence(float(timer_interval.text))
 	
 	text_edit.insert_text_at_caret(timer_text)
+	
+
+func _on_view_dialogue_pressed() -> void:
+	var box_window := Window.new()
+	box_window.title = "Running: " + dialogue_file.dialogue_idx
+	box_window.size = get_viewport_rect().size * 0.8
+	box_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
+	box_window.unresizable = false
+	box_window.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+	
+	box_window.max_size = get_viewport_rect().size
+	
+	box_window.close_requested.connect(
+		func ():
+			box_window.queue_free()
+	)
+	
+	var ehxibition_text := DialogueResource.new()
+	var array_exibition := dialogue_clone.duplicate()
+	var portrait_exibit := portraits_array.duplicate()
+	
+	for i in range(array_exibition.size()):
+		array_exibition[i] = portrait_exibit[i] + array_exibition[i]
+	ehxibition_text.full_dialogue_sequence = array_exibition
+	
+	var dialogue_scene: DialogueBox = preload("res://dialogue_box.tscn").instantiate()
+	dialogue_scene.dialogue_sequence = ehxibition_text
+	
+	box_window.add_child(dialogue_scene)
+	get_tree().root.add_child(box_window)
 	
