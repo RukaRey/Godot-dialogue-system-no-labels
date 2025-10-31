@@ -1,5 +1,9 @@
-extends Node2D
+@icon("res://addons/dialogue_system_+_editor/misc_assets/dial_box_icon.svg")
+extends Node
 class_name DialogueBox
+## Top node of the dialogue node tree, controls operation.
+##
+## Sets if dialogue exhibited is interactable, and which dialogue to load in a DialogueDisplay child.
 
 signal interaction_input
 signal skip_dialogue
@@ -8,17 +12,14 @@ signal skip_dialogue
 var is_interactive: bool = true
 @export 
 var dialogue_sequence: DialogueResource
-
-@onready 
-var dialogue_display: DialogueDisplay = $DialogueDisplay
-
+@export 
+var dialogue_display: DialogueDisplay 
 
 
 func _ready() -> void:
 	skip_dialogue.connect(dialogue_display.skip_text)
 	
 	set_process_input(is_interactive)
-	
 	run_sequence()
 
 func _input(event: InputEvent) -> void:

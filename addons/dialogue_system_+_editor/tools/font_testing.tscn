@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://ds2n1wi0o3n3f"]
 
-[ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://dialogue_display.gd" id="1_43tdi"]
-[ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://misc_assets/text_box.png" id="2_rxapr"]
-[ext_resource type="Texture2D" uid="uid://clw6n8uukvmvh" path="res://misc_assets/MerryPortraits.png" id="3_o8lq2"]
+[ext_resource type="Script" uid="uid://c0k43y3adjfuf" path="res://addons/dialogue_system_+_editor/tools/dialogue_display.gd" id="1_43tdi"]
+[ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://addons/dialogue_system_+_editor/misc_assets/text_box.png" id="2_rxapr"]
+[ext_resource type="Texture2D" uid="uid://clw6n8uukvmvh" path="res://addons/dialogue_system_+_editor/misc_assets/MerryPortraits.png" id="3_o8lq2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5qop6"]
 atlas = ExtResource("3_o8lq2")

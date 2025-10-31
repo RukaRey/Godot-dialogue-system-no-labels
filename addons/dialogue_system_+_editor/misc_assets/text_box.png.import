@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bekaoumb8d4dd"
-path="res://.godot/imported/dog_nondescriptive.png-1ebebe40b778af52c76f3da6e328d4cc.ctex"
+uid="uid://blalr6qls7acv"
+path="res://.godot/imported/text_box.png-7273e7a9d336c3f1a1e97954aa5c45a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://misc_assets/dog_nondescriptive.png"
-dest_files=["res://.godot/imported/dog_nondescriptive.png-1ebebe40b778af52c76f3da6e328d4cc.ctex"]
+source_file="res://addons/dialogue_system_+_editor/misc_assets/text_box.png"
+dest_files=["res://.godot/imported/text_box.png-7273e7a9d336c3f1a1e97954aa5c45a8.ctex"]
 
 [params]
 

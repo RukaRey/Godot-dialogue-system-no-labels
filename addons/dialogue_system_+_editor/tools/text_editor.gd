@@ -1,7 +1,9 @@
+@icon("res://addons/dialogue_system_+_editor/misc_assets/dial_editor_icon.svg")
 extends DialogueDisplay
 class_name DialogueEditor
+## Creates and edits resource files that contains dialogue data.
 
-@export var save_path: String = "res://resources/"
+
 @onready var save_wdn: FileDialog = $SaveWdn
 @onready var open_file: FileDialog = $OpenFile
 
@@ -9,6 +11,7 @@ class_name DialogueEditor
 @onready var pprt_idx_label: Label = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/PprtIdx
 @onready var tags_options: OptionButton = $WholeInterface/TextInterface/HBoxContainer/TagsOptions
 @onready var text_for_filename: Label = $PanelContainer/HBoxContainer/TextForFilename
+@onready var display_tags: CheckButton = $WholeInterface/PortraitBtn/Spacer/FileOptions/DisplayTags
 
 @onready var char_name: TextEdit = $WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer2/CharName
 @onready var text_edit: TextEdit = $WholeInterface/TextInterface/HBoxContainer2/TextEdit
@@ -68,7 +71,6 @@ func activate_editor(active: bool):
 	text_edit.editable = active
 	timer_interval.editable = active
 	
-	#apply_tag.disabled = not active
 	view_dialogue.disabled = not active
 	add_timer.disabled = not active
 	tags_options.disabled = not active
@@ -99,8 +101,11 @@ func _new_dialogue_file() -> void:
 	
 	text_edit.clear()
 	max_dial_idx = 0
+	dial_idx = 0
 	tags_options.select(0)
 	
+	display_tags.disabled = false
+	display_tags.button_pressed = false
 	activate_editor(true)
 	
 
@@ -130,6 +135,9 @@ func _on_file_selected(path: String) -> void:
 	dial_idx = 0
 	
 	show_text(dial_idx)
+	
+	display_tags.disabled = false
+	display_tags.button_pressed = false
 	activate_editor(true)
 	
 
@@ -322,9 +330,29 @@ func _on_view_dialogue_pressed() -> void:
 		array_exibition[i] = portrait_exibit[i] + array_exibition[i]
 	ehxibition_text.full_dialogue_sequence = array_exibition
 	
-	var dialogue_scene: DialogueBox = preload("res://dialogue_box.tscn").instantiate()
+	var dialogue_scene: DialogueBox = preload("res://addons/dialogue_system_+_editor/tools/dialogue_box.tscn").instantiate()
 	dialogue_scene.dialogue_sequence = ehxibition_text
 	
 	box_window.add_child(dialogue_scene)
 	get_tree().root.add_child(box_window)
+	
+
+
+func _on_display_tags_toggled(toggled_on: bool) -> void:
+	activate_editor(not toggled_on)
+	
+	next_button.disabled = true
+	prev_button.disabled = true
+	
+	if toggled_on:
+		var clean_text: String = filter_sentence_bbcodes(dialogue_clone[dial_idx])
+		var timer_erase_pos := find_await_timers(clean_text)
+		timer_erase_pos = update_timer_queue(timer_erase_pos)
+		for timer in timer_erase_pos:
+			clean_text = clean_text.erase(timer["position"], timer["length"])
+		
+		text_edit.text = filter_sentence_bbcodes(clean_text)
+	else:
+		dial_idx = dial_idx
+		text_edit.text = dialogue_clone[dial_idx]
 	

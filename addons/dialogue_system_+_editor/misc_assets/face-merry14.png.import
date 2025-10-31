@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clw6n8uukvmvh"
-path="res://.godot/imported/MerryPortraits.png-d2609a1807675b90495c5f66e405e537.ctex"
+uid="uid://dxuhwi5xmmtxn"
+path="res://.godot/imported/face-merry14.png-ab534482f219038b44b74a31b747ce98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://misc_assets/MerryPortraits.png"
-dest_files=["res://.godot/imported/MerryPortraits.png-d2609a1807675b90495c5f66e405e537.ctex"]
+source_file="res://addons/dialogue_system_+_editor/misc_assets/face-merry14.png"
+dest_files=["res://.godot/imported/face-merry14.png-ab534482f219038b44b74a31b747ce98.ctex"]
 
 [params]
 

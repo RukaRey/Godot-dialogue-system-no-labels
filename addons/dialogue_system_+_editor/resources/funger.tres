@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dlw8lywavuled" path="res://addons/dialogue_system_+_editor/resources/dialogue_resource.gd" id="1_tqlch"]
+
+[resource]
+script = ExtResource("1_tqlch")
+dialogue_idx = "funger"
+full_dialogue_sequence = Array[String](["It i[c.red]s an evil mess[_c.red]age, [c.red]but it has to be said.[_c.red]"])

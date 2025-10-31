@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://brb682k6ruw5n"]
 
-[ext_resource type="Script" uid="uid://clhuuu44q73bs" path="res://tools/text_editor.gd" id="1_amexy"]
-[ext_resource type="Shader" uid="uid://dwo50iij1hgpv" path="res://misc_assets/scroll.gdshader" id="2_capgc"]
-[ext_resource type="Texture2D" uid="uid://buxpw5qp65fn7" path="res://misc_assets/dog_nondescriptive-export.png" id="2_ppc4v"]
-[ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://misc_assets/text_box.png" id="3_kavdv"]
+[ext_resource type="Script" uid="uid://clhuuu44q73bs" path="res://addons/dialogue_system_+_editor/tools/text_editor.gd" id="1_amexy"]
+[ext_resource type="Shader" uid="uid://dwo50iij1hgpv" path="res://addons/dialogue_system_+_editor/misc_assets/scroll.gdshader" id="2_capgc"]
+[ext_resource type="Texture2D" uid="uid://buxpw5qp65fn7" path="res://addons/dialogue_system_+_editor/misc_assets/dog_nondescriptive-export.png" id="2_ppc4v"]
+[ext_resource type="Texture2D" uid="uid://blalr6qls7acv" path="res://addons/dialogue_system_+_editor/misc_assets/text_box.png" id="3_kavdv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i2i2j"]
 shader = ExtResource("2_capgc")
@@ -104,7 +104,6 @@ title = "Open a File"
 initial_position = 1
 ok_button_text = "Open"
 file_mode = 0
-root_subfolder = "res://resources"
 filters = PackedStringArray("*.tres")
 
 [node name="SaveWdn" type="FileDialog" parent="."]
@@ -147,6 +146,11 @@ size_flags_horizontal = 0
 size_flags_vertical = 6
 text = "Dialogue #0"
 horizontal_alignment = 2
+
+[node name="DisplayTags" type="CheckButton" parent="WholeInterface/PortraitBtn/Spacer/FileOptions"]
+layout_mode = 2
+disabled = true
+text = "Display BB Tags"
 
 [node name="PanelContainer" type="PanelContainer" parent="WholeInterface/PortraitBtn"]
 layout_mode = 2
@@ -285,6 +289,7 @@ syntax_highlighter = SubResource("CodeHighlighter_amexy")
 [connection signal="pressed" from="PanelContainer/HBoxContainer/OpenFile" to="." method="_on_open_file_pressed"]
 [connection signal="file_selected" from="OpenFile" to="." method="_on_file_selected"]
 [connection signal="file_selected" from="SaveWdn" to="." method="_on_save_wdn_file_selected"]
+[connection signal="toggled" from="WholeInterface/PortraitBtn/Spacer/FileOptions/DisplayTags" to="." method="_on_display_tags_toggled"]
 [connection signal="text_changed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer2/CharName" to="." method="_on_character_name_analysis"]
 [connection signal="pressed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/PrevPrtButton" to="." method="_on_decrease_pprt_idx"]
 [connection signal="pressed" from="WholeInterface/PortraitBtn/PanelContainer/VBoxContainer/HBoxContainer/NextPrtButton" to="." method="_on_increase_pprt_idx"]

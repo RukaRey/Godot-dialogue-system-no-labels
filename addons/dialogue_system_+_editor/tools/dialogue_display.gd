@@ -1,10 +1,17 @@
+@icon("res://addons/dialogue_system_+_editor/misc_assets/dial_display_icon.svg")
 extends Control 
 class_name DialogueDisplay
+## Renders text on screen in a limited area.
+##
+## Usually child of a DialogueBox, controls the speed, portrait and anchor, which the text is rendered.
 
 signal sentence_over(is_sentence_over: bool)
 
-var font_image := preload("res://fonts/8bitOperator.png")
-var letter_object := preload("res://letter_object.tscn")
+@export_file("*.png")
+var font_image_path: String = "res://addons/dialogue_system_+_editor/fonts/8bitOperator.png"
+@onready
+var font_image: CompressedTexture2D = load(font_image_path)
+var letter_object := preload("res://addons/dialogue_system_+_editor/tools/letter_object.tscn")
 
 var universal_char_count: int = 0
 
@@ -76,7 +83,7 @@ func spawn_letter(
 	
 
 func draw_sentence_by_char(
-		char_bbcode: String,
+		bb_codes_coords: Dictionary,
 		timer_queue: Array[Dictionary],
 		sentence := "Hi this is texx string!",
 		starting_offset := Vector2i.ZERO,
@@ -93,6 +100,8 @@ func draw_sentence_by_char(
 	text_split = PackedStringArray(text_split)
 	
 	var _max_chars: Vector2i =  Vector2i(char_box.size) / char_size
+	var current_bbcode: String = "[None]"
+	var current_bb_cords := Vector2(-1, 0)
 	
 	var char_count := 0
 	var bb_delay_count := -1
@@ -102,9 +111,22 @@ func draw_sentence_by_char(
 		
 		if typewriter_speed == 0:
 			bb_delay_count += 1
+			
 		
-		spawn_letter(char_idx, char_bbcode, bb_delay_count, char_pos)
+		for bbcode in bb_codes_coords.keys():
+			var bb_coords: Array = bb_codes_coords[bbcode]
+			
+			for bb in bb_coords:
+				if universal_char_count > bb.x and universal_char_count <= bb.y :
+					current_bbcode = bbcode
+					current_bb_cords = bb
+			
+		
+		spawn_letter(char_idx, current_bbcode, bb_delay_count, char_pos)
 		x_offset += 1
+		
+		if universal_char_count >= current_bb_cords.y:
+			current_bbcode = "[None]"
 		
 		if typewriter_speed > 0:
 			await get_tree().create_timer(typewriter_speed).timeout
@@ -203,28 +225,9 @@ func draw_string_sentence(
 	# Tracks the char count, useful for the bbcodes. Updated after every spawned word
 	var char_count := 0
 	
-	# Current BBCode being applied to one word or more
-	var current_bbcode: String = "[None]"
-	
-	# The active BBCode's coordinates, dictates if BBcode is active or not.
-	var current_bb_cords := Vector2(-1, 0)
-	
 	for i in text_split.size():
 		
-		sum_word_sizes += word_sizes[i]
-		
-		for bbcode in bb_codes_coords.keys():
-			var bb_coords: Array = bb_codes_coords[bbcode]
-			for bb in bb_coords:
-				if char_count >= bb.x and char_count < bb.y :
-					#printt("BB detail:", bb, char_count)
-					current_bbcode = bbcode
-					current_bb_cords = bb
-					var bb_found = bb_coords.find(bb)
-					bb_coords.remove_at(bb_found)
-		
-		if char_count > current_bb_cords.y:
-			current_bbcode = "[None]"
+		sum_word_sizes += word_sizes[i]	
 		
 		if sum_word_sizes > char_box.size.x - 32:
 			sum_word_sizes = word_sizes[i]
@@ -232,7 +235,7 @@ func draw_string_sentence(
 			word_char_idx.y += 1
 		
 		var current_char_count = await draw_sentence_by_char(
-			current_bbcode, timer_queue, text_split[i], word_char_idx)
+			bb_codes_coords, timer_queue, text_split[i], word_char_idx)
 		
 		word_char_idx.x += current_char_count
 		char_count += current_char_count

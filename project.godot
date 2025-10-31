@@ -12,14 +12,18 @@ config_version=5
 
 config/name="Dialogue System 2"
 config/tags=PackedStringArray("system")
-run/main_scene="uid://b3jyym14yptlo"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+run/main_scene="uid://brb682k6ruw5n"
+config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="uid://cp4g2jg7puom6"
 
 [autoload]
 
-BBCode="*res://global/global_bb_code.gd"
-PortraitParse="*res://global/global_portrait_parse.gd"
+BBCode="*res://addons/dialogue_system_+_editor/global/global_bb_code.gd"
+PortraitParse="*res://addons/dialogue_system_+_editor/global/global_portrait_parse.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_system_+_editor/plugin.cfg")
 
 [input]
 
